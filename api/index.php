@@ -1,44 +1,52 @@
 <?php
 
-// 1. Preparar directorios temporales obligatorios en /tmp
-$viewsPath = '/tmp/views';
-$storagePath = '/tmp/storage';
+// 1. Crear directorios temporales en /tmp antes de inicializar Laravel
+$tmpDirs = [
+    '/tmp/views',
+    '/tmp/storage/framework/views',
+    '/tmp/storage/framework/sessions',
+    '/tmp/storage/framework/cache',
+    '/tmp/storage/logs',
+    '/tmp/bootstrap/cache'
+];
 
-if (!is_dir($viewsPath)) {
-    mkdir($viewsPath, 0755, true);
+foreach ($tmpDirs as $dir) {
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
 }
 
-if (!is_dir($storagePath)) {
-    mkdir($storagePath . '/framework/sessions', 0755, true);
-    mkdir($storagePath . '/framework/cache', 0755, true);
-    mkdir($storagePath . '/logs', 0755, true);
-}
+// 2. Asignar ruta compilada de vistas en el entorno
+$_ENV['VIEW_COMPILED_PATH'] = '/tmp/views';
+$_SERVER['VIEW_COMPILED_PATH'] = '/tmp/views';
 
 require __DIR__ . '/../vendor/autoload.php';
 
+$app = require_once __DIR__ . '/../bootstrap/app.php';
+
+// 3. Forzar el uso de rutas con permisos de escritura
+$app->useStoragePath('/tmp/storage');
+$app->useBootstrapPath('/tmp/bootstrap/cache');
+
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+
+// 4. Capturar el error real durante la fase de arranque
 try {
-    // 2. Inicializar Laravel
-    $app = require_once __DIR__ . '/../bootstrap/app.php';
-    $app->useStoragePath($storagePath);
-
-    // 3. Procesar la petición
-    $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
-
-    $response = $kernel->handle(
-        $request = Illuminate\Http\Request::capture()
-    );
-
-    $response->send();
-    $kernel->terminate($request, $response);
-
+    $kernel->bootstrap();
 } catch (\Throwable $e) {
-    // Captura directamente la falla raíz omitiendo el renderizador de Blade
     http_response_code(500);
     header('Content-Type: text/plain; charset=utf-8');
-    
-    echo "=== DETALLE DEL ERROR REAL ===\n\n";
+    echo "=== ERROR REAL DE ARRANQUE ===\n\n";
     echo "Mensaje: " . $e->getMessage() . "\n";
     echo "Archivo: " . $e->getFile() . " (Línea " . $e->getLine() . ")\n\n";
     echo "Traza:\n" . $e->getTraceAsString();
     exit(1);
 }
+
+// 5. Procesar la petición si el arranque fue exitoso
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
+
+$response->send();
+$kernel->terminate($request, $response);
