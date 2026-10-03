@@ -1,18 +1,35 @@
 <?php
 
-$storagePath = sys_get_temp_dir().'/industrias-aldo';
+// 1. Crear directorios temporales obligatorios en /tmp
+$viewsPath = '/tmp/views';
+$storagePath = '/tmp/storage';
 
-foreach (['framework/views', 'framework/cache/data', 'framework/sessions', 'logs'] as $directory) {
-    $path = $storagePath.'/'.$directory;
-
-    if (! is_dir($path) && ! mkdir($path, 0775, true) && ! is_dir($path)) {
-        throw new RuntimeException('Unable to create the application storage directory.');
-    }
+if (!is_dir($viewsPath)) {
+    mkdir($viewsPath, 0755, true);
 }
 
-$_ENV['LARAVEL_STORAGE_PATH'] = $storagePath;
-$_SERVER['LARAVEL_STORAGE_PATH'] = $storagePath;
-$_SERVER['HTTPS'] = 'on';
-$_SERVER['SERVER_PORT'] = 443;
+if (!is_dir($storagePath)) {
+    mkdir($storagePath . '/framework/sessions', 0755, true);
+    mkdir($storagePath . '/framework/cache', 0755, true);
+    mkdir($storagePath . '/logs', 0755, true);
+}
 
-require __DIR__.'/../public/index.php';
+// 2. Cargar el autoloader de Composer
+require __DIR__ . '/../vendor/autoload.php';
+
+// 3. Inicializar la aplicación de Laravel
+$app = require_once __DIR__ . '/../bootstrap/app.php';
+
+// 4. Redirigir la ruta de almacenamiento al directorio temporal
+$app->useStoragePath($storagePath);
+
+// 5. Procesar la petición HTTP
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+
+$response = $kernel->handle(
+    $request = Illuminate\Http\Request::capture()
+);
+
+$response->send();
+
+$kernel->terminate($request, $response);
