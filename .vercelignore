@@ -1,0 +1,14 @@
+.git
+.agents
+.claude
+.codex
+.env
+.env.*
+node_modules
+vendor
+tests
+storage
+database/*.sqlite*
+public/hot
+public/storage
+bootstrap/cache/*.php
