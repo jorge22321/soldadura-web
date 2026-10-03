@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+      
+        --brand-hue: 25;
+        --brand-saturation: 100%;
+        --brand-lightness: 50%;
+
+        --color-brand: var(--brand-hue) var(--brand-saturation) var(--brand-lightness);
+        --color-brand-hover: var(--brand-hue) var(--brand-saturation) 56%;
+        --color-brand-warm: var(--brand-hue) var(--brand-saturation) 61%;
+        --color-brand-soft: var(--brand-hue) var(--brand-saturation) 66%;
+        --color-brand-light: var(--brand-hue) var(--brand-saturation) 70%;
+        --color-brand-pale: var(--brand-hue) var(--brand-saturation) 78%;
+        --color-brand-focus: var(--brand-hue) var(--brand-saturation) 29%;
+        --color-brand-contrast: var(--brand-hue) 70% 7%;
+        --color-brand-50: var(--brand-hue) var(--brand-saturation) 96%;
+        --color-brand-100: var(--brand-hue) var(--brand-saturation) 92%;
+        --color-brand-400: var(--brand-hue) var(--brand-saturation) 64%;
+        --color-brand-500: var(--color-brand-hover);
+        --color-brand-600: var(--color-brand);
+        --color-brand-700: var(--brand-hue) var(--brand-saturation) 42%;
+        --color-brand-800: var(--brand-hue) var(--brand-saturation) 34%;
+
+        --color-canvas-deep: 7 9 11;
+        --color-canvas: 9 11 13;
+        --color-canvas-soft: 9 12 14;
+        --color-surface-deep: 8 10 12;
+        --color-surface: 10 13 15;
+        --color-surface-soft: 11 14 16;
+        --color-surface-raised: 14 17 19;
+        --color-surface-muted: 16 19 21;
+        --color-surface-elevated: 21 25 28;
+        --color-surface-shell: 18 20 22;
+
+        --color-content-strong: 244 244 245;
+        --color-content: 242 243 244;
+        --color-content-soft: 236 238 239;
+        --color-content-muted: 184 192 199;
+        --color-content-subtle: 164 171 177;
+        --color-content-faint: 132 142 150;
+
+        --color-white: 255 255 255;
+        --color-black: 0 0 0;
+        --color-shadow: var(--color-black);
+        --color-gray-50: 249 250 251;
+        --color-gray-100: 243 244 246;
+        --color-gray-200: 229 231 235;
+        --color-gray-300: 209 213 219;
+        --color-gray-400: 156 163 175;
+        --color-gray-500: 107 114 128;
+        --color-gray-600: 75 85 99;
+        --color-gray-700: 55 65 81;
+        --color-gray-800: 31 41 55;
+        --color-gray-900: 17 24 39;
+        --color-success: 22 163 74;
+        --color-danger-light: 239 68 68;
+        --color-danger: 220 38 38;
+        --color-danger-dark: 185 28 28;
+    }
+
+}

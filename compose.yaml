@@ -1,0 +1,34 @@
+services:
+    app:
+        build:
+            context: .
+            target: runtime
+        environment:
+            APP_NAME: "${APP_NAME:-Soldadura Web}"
+            APP_ENV: production
+            APP_KEY: "${APP_KEY:-}"
+            APP_DEBUG: "false"
+            APP_URL: "${APP_URL:-http://localhost:8000}"
+            LOG_CHANNEL: stderr
+            LOG_LEVEL: warning
+            DB_CONNECTION: sqlite
+            DB_DATABASE: /var/www/html/storage/app/database.sqlite
+            SESSION_DRIVER: file
+            CACHE_STORE: file
+            QUEUE_CONNECTION: sync
+            RUN_MIGRATIONS: "true"
+        ports:
+            - "${APP_PORT:-8000}:80"
+        volumes:
+            - app-storage:/var/www/html/storage
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "curl", "--fail", "--silent", "http://localhost/up"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 20s
+
+volumes:
+    app-storage:
+
